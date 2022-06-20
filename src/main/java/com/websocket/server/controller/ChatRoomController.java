@@ -36,6 +36,7 @@ public class ChatRoomController {
     public ChatRoom createRoom(@RequestParam String name) {
         return chatRoomRepository.createChatRoom(name);
     }
+    
 
     //room 찾기
     @GetMapping("/room/{roomId}")
