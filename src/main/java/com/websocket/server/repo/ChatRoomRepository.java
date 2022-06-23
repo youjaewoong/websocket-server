@@ -29,6 +29,7 @@ public class ChatRoomRepository {
     private final RedisMessageListenerContainer redisMessageListener;
     // 구독 처리 서비스
     private final RedisSubscriber redisSubscriber;
+    
     // Redis
     private static final String CHAT_ROOMS = "CHAT_ROOM";
     private final RedisTemplate<String, Object> redisTemplate;
@@ -72,7 +73,7 @@ public class ChatRoomRepository {
     }
 
     public ChannelTopic getTopic(String roomId) {
-    	//this.enterChatRoom(roomId);
+    	this.enterChatRoom(roomId);
         return topics.get(roomId);
     }
 }

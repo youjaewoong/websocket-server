@@ -10,31 +10,36 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
-@Slf4j
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("redis")
 public class RedisController {
-	@Autowired
+	
 	private RedisTemplate<String, String> redisTemplate;
-	@Autowired
 	private HashOperations<String, Object, Object> hashOperations;
 	
-    @Autowired
-    public void setRedisTemplate(RedisTemplate<String, String> redisTemplate) {
+	@Autowired
+	RedisController(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.hashOperations = redisTemplate.opsForHash();
     }
     
-
-	@PostMapping("/redis/test")
-	public ResponseEntity<?> addRedisKey() {
+	/**
+	 * key, value
+	 * @return
+	 */
+	@PostMapping("/key-value")
+	public ResponseEntity<?> createKeyValue() {
 		ValueOperations<String, String> vop = redisTemplate.opsForValue();
 		vop.set("yellow", "banana");
 		vop.set("red", "apple");
@@ -42,91 +47,65 @@ public class RedisController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@GetMapping("/redis/test/{key}")
-	public ResponseEntity<?> getRedisKey(@PathVariable String key) {
+	
+	@GetMapping("/key-value/{key}")
+	public ResponseEntity<?> getKeyValue(@PathVariable String key) {
 		ValueOperations<String, String> vop = redisTemplate.opsForValue();
 		String value = vop.get(key);
 		return new ResponseEntity<>(value, HttpStatus.OK);
 	}
 	
-    /*
-    테스트 확인법
-    - POSTMAN으로 확인할 수 있다.
-    - redis key(방)의 이름을 redis_test_room 로 하드코딩하여 테스트 코드를 작성함
-    - 모두 POST 방식
-
-    1. sendTest, updateTest
-    - input : str
-
-    2. getTest, delTest
-    - input : "redis_test_room"
-    *
-    * */
     
-    //단순히 레디스에만 값 저장하는 테스트 API
-    @PostMapping("/send")
-    public String sendTest(@RequestBody String input) throws UnsupportedEncodingException {
-        input = URLDecoder.decode(input, "UTF-8");
-        log.info("RedisTestController.sendTest");
-        log.info("input : " + input);
-
-        // redis key(redis_test_room)의 send_str에 input을 넣음
-        this.hashOperations.put("redis_test_room","send_str",input);
-        return input;
+	/**
+	 * hash key 생성
+	 * @return
+	 */
+    @PostMapping("/hash")
+    public ResponseEntity<?> createHash(@RequestBody String input) throws UnsupportedEncodingException {
+        this.hashOperations.put("test","room", URLDecoder.decode(input, "UTF-8"));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/update")
-    public String updateTest(@RequestBody String input) throws UnsupportedEncodingException {
-        input = URLDecoder.decode(input, "UTF-8");
-        log.info("RedisTestController.sendTest");
-        log.info("input : " + input);
+    
+    @PostMapping("/hash/push")
+    public ResponseEntity<?> pushHash(@RequestBody String input) throws UnsupportedEncodingException {
+        
         String inputs = "";
-
-        //기존에 redis_test_room 가 존재하는지 체크
-        if(redisTemplate.hasKey("redis_test_room")){
-            Map<Object,Object> redisTestRoomComponent = this.hashOperations.entries("redis_test_room");
+        if (redisTemplate.hasKey("test")){
+            Map<Object,Object> redisTestRoomComponent = this.hashOperations.entries("test");
             //기존에 send_str에 값이 존재하는지 체크
-            if(redisTestRoomComponent.get("send_str")!=null){
-                inputs = redisTestRoomComponent.get("send_str").toString();
+            if (redisTestRoomComponent.get("room") != null) {
+                inputs = redisTestRoomComponent.get("room").toString();
                 inputs += ",";
             }
         }
+        inputs += URLDecoder.decode(input, "UTF-8");
+        // redis key(test)의 room에 inputs 을 넣음
+        this.hashOperations.put("test","room",inputs);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    
 
-        inputs += input;
-
-        // redis key(redis_test_room)의 send_str에 inputs 을 넣음
-        this.hashOperations.put("redis_test_room","send_str",inputs);
-        log.info("current stack inputs : " + inputs);
-
-        return inputs;
+    @GetMapping("/hash/{keyName}")
+    public String getHash(@PathVariable String keyName) {
+        
+    	Map<Object,Object> room = this.hashOperations.entries(keyName);
+        if (room.get("room") != null) {
+        	return room.get("room").toString();
+        }
+        return null;
     }
 
-    @PostMapping("/get")
-    public String getTest(@RequestBody String keyName) throws UnsupportedEncodingException {
-        keyName = URLDecoder.decode(keyName, "UTF-8");
-        log.info("RedisTestController.getTest()");
-        Map<Object,Object> redisTestRoomComponent = this.hashOperations.entries(keyName);
-        String value = "";
-
-        //redis key(방) 안에 send_str이라는 attr이 존재하면 그 값을 리턴
-        if(redisTestRoomComponent.get("send_str")!=null){
-            value = redisTestRoomComponent.get("send_str").toString();
-            log.info(value);
-
+    
+    /**
+     * key 삭제
+     */
+    @DeleteMapping("/key/{keyName}")
+    public boolean deleteKey(@PathVariable String keyName) {
+    	//cli : del {keyName}
+        if (redisTemplate.hasKey(keyName)) {
+        	return redisTemplate.delete(keyName);
         }
-        return value;
-    }
-
-    @PostMapping("/del")
-    public int delTest(@RequestBody String keyName) throws UnsupportedEncodingException {
-        keyName = URLDecoder.decode(keyName, "UTF-8");
-        // redis key(방) 삭제 api
-        // cli cmd: del {keyName}
-        if(Boolean.TRUE.equals(redisTemplate.hasKey(keyName))){
-            redisTemplate.delete(keyName);
-            return 1;
-        }else{
-            return 0;
-        }
+        return false;
     }
 }
