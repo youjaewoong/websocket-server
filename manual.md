@@ -42,3 +42,13 @@ pub/sub구조로 되어있고 메시지를 발송한다 집배원(pubisher) -> �
 - 채팅방 생성 : pub/sub 구현을 위한 Topic이 하나 생성된다.
 - 채팅방 입장 : Topic 구독
 - 채팅방에서 메시지를 보내고 받는다 : 해당 Topic으로 메시지를 발송하거나(pub) 메시지를 받는다(sub)
+
+### redis
+```
+string -> GET <key>
+hash -> HGETALL <key>
+lists -> lrange <key> <start> <end>
+sets -> smembers <key>
+sorted sets -> ZRANGEBYSCORE <key> <min> <max>
+stream -> xread count <count> streams <key> <ID>.
+```
