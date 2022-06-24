@@ -23,13 +23,13 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("redis")
-public class RedisController {
+public class RedisApiController {
 	
 	private RedisTemplate<String, String> redisTemplate;
 	private HashOperations<String, Object, Object> hashOperations;
 	
 	@Autowired
-	RedisController(RedisTemplate<String, String> redisTemplate) {
+	RedisApiController(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.hashOperations = redisTemplate.opsForHash();
     }

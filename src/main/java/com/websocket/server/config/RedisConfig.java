@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -19,6 +20,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@EnableCaching
 public class RedisConfig {
 
 	@Value("${spring.redis.host}")
@@ -29,6 +31,7 @@ public class RedisConfig {
 
 	@Value("${spring.redis.password}")
 	private String redisPassword;
+	
 
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
@@ -64,15 +67,15 @@ public class RedisConfig {
     }
     
     @Bean
-    @SuppressWarnings("deprecation")
     public CacheManager cacheManager() {
-        RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory());
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer 변경
-                .prefixKeysWith("Test:") // Key Prefix로 "Test:"를 앞에 붙여 저장
+                .prefixCacheNameWith("cache:") // Key Prefix로 "cache:"를 앞에 붙여 저장
                 .entryTtl(Duration.ofMinutes(30)); // 캐시 수명 30분
-        builder.cacheDefaults(configuration);
-        return builder.build();
+        
+        RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory())
+        		.cacheDefaults(configuration).build();
+        return redisCacheManager;
     }
 
 }
