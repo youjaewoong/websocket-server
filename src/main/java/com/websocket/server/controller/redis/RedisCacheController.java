@@ -1,4 +1,4 @@
-package com.websocket.server.controller;
+package com.websocket.server.controller.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,7 +13,7 @@ import com.websocket.server.service.RedisCacheService;
 
 
 @RestController
-@RequestMapping("redis-cash")
+@RequestMapping("redis-keys")
 public class RedisCacheController {
 
 	@Autowired

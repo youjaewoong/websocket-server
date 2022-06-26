@@ -1,4 +1,4 @@
-package com.websocket.server.controller;
+package com.websocket.server.controller.redis;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -7,10 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,37 +21,22 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("redis")
-public class RedisApiController {
+public class RedisHashController {
 	
+	
+	/**
+	 * Hashes structure command – 순서 없음. key 중복 허용안함, value 중복 허용
+	 * redis command hset, hget, hlen, hdel에 대한 내용입니다.
+	 */
 	private RedisTemplate<String, String> redisTemplate;
 	private HashOperations<String, Object, Object> hashOperations;
 	
+	
 	@Autowired
-	RedisApiController(RedisTemplate<String, String> redisTemplate) {
+	RedisHashController(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.hashOperations = redisTemplate.opsForHash();
     }
-    
-	/**
-	 * key, value
-	 * @return
-	 */
-	@PostMapping("/key-value")
-	public ResponseEntity<?> createKeyValue() {
-		ValueOperations<String, String> vop = redisTemplate.opsForValue();
-		vop.set("yellow", "banana");
-		vop.set("red", "apple");
-		vop.set("green", "watermelon");
-		return new ResponseEntity<>(HttpStatus.CREATED);
-	}
-
-	
-	@GetMapping("/key-value/{key}")
-	public ResponseEntity<?> getKeyValue(@PathVariable String key) {
-		ValueOperations<String, String> vop = redisTemplate.opsForValue();
-		String value = vop.get(key);
-		return new ResponseEntity<>(value, HttpStatus.OK);
-	}
 	
     
 	/**
@@ -95,17 +78,5 @@ public class RedisApiController {
         }
         return null;
     }
-
     
-    /**
-     * key 삭제
-     */
-    @DeleteMapping("/key/{keyName}")
-    public boolean deleteKey(@PathVariable String keyName) {
-    	//cli : del {keyName}
-        if (redisTemplate.hasKey(keyName)) {
-        	return redisTemplate.delete(keyName);
-        }
-        return false;
-    }
 }
