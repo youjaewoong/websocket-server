@@ -1,4 +1,4 @@
-package com.websocket.server.controller;
+package com.websocket.server.controller.redis.kcc;
 
 import java.util.Map;
 

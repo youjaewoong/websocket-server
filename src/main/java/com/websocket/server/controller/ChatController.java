@@ -1,17 +1,18 @@
 package com.websocket.server.controller;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.websocket.server.model.ChatMessage;
 import com.websocket.server.redis.RedisPublisher;
 import com.websocket.server.repo.ChatRoomRepository;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class ChatController {
 
  private final RedisPublisher redisPublisher;
@@ -26,6 +27,7 @@ public class ChatController {
   */
  @MessageMapping("/chat/message")
  @PostMapping("/chat/message")
+ @ApiOperation("메시지 보내기")
  public void message(ChatMessage message) {
      if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
     	 chatRoomRepository.enterChatRoom(message.getRoomId());

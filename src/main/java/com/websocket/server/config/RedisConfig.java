@@ -13,11 +13,15 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import com.websocket.server.redis.RedisSubscriber;
 
 @Configuration
 @EnableCaching
@@ -77,5 +81,19 @@ public class RedisConfig {
         		.cacheDefaults(configuration).build();
         return redisCacheManager;
     }
+    
+    
+//    @Bean
+//    public StringRedisTemplate strRedisTemplate() {
+//        StringRedisTemplate redisTemplate = new StringRedisTemplate();
+//        redisTemplate.setConnectionFactory(redisConnectionFactory());
+//        return redisTemplate;
+//    }
+//    
+//    
+//    @Bean  
+//    public MessageListenerAdapter messageListener(RedisSubscriber redisSubscriber) {  
+//    	return new MessageListenerAdapter(redisSubscriber);  
+//    }
 
 }
