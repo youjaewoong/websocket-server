@@ -1,15 +1,16 @@
 package com.websocket.server.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.websocket.server.model.ChatMessage;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.websocket.server.model.ChatMessage;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -18,9 +19,9 @@ import org.springframework.stereotype.Service;
  * 해당 메시지를 ChatMessage로 변환하고 messaging Template을 이용하여 채팅방의 모든 websoket 클라이언트들에게
  * 메시지를 전달하도록 구현하였다. 
  */
-@Slf4j
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class RedisSubscriber implements MessageListener {
 
     private final ObjectMapper objectMapper;

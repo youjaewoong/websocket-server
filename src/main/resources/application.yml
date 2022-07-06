@@ -3,14 +3,14 @@ server:
   
 spring:
   redis:
-    #host: redis-15217.c244.us-east-1-2.ec2.cloud.redislabs.com
-    #port: 15217
-    #username: default
-    #password: 5MECL7QcyIbDgBbupvWuRwBunfwynddS
-    host: 133.186.171.42
-    port: 46094
-    username: kcc-redis
-    password: 
+    host: redis-15217.c244.us-east-1-2.ec2.cloud.redislabs.com
+    port: 15217
+    username: default
+    password: 5MECL7QcyIbDgBbupvWuRwBunfwynddS
+    #host: 133.186.171.42
+    #port: 46094
+    #username: kcc-redis
+    #password: 
  
   
 ############################################################################

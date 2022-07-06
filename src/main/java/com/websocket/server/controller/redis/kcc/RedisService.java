@@ -11,6 +11,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import com.websocket.server.redis.RedisKccSubscriber;
 import com.websocket.server.redis.RedisSubscriber;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class RedisService {
 	private RedisMessageListenerContainer redisMessageListener;
 	
 	@Autowired
-	private RedisSubscriber redisSubscriber;
+	private RedisKccSubscriber redisSubscriber;
 	
 	private Map<String, ChannelTopic> subscribers = new HashMap<>();
 
