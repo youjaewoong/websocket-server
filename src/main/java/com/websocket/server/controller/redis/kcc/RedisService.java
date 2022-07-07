@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.websocket.server.redis.RedisKccSubscriber;
-import com.websocket.server.redis.RedisSubscriber;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,15 +22,16 @@ public class RedisService {
 	
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
-	@Autowired
-	private SimpMessagingTemplate template; //특정 Broker로 메세지를 전달
+	
+	//@Autowired
+	//private SimpMessagingTemplate template; //특정 Broker로 메세지를 전달
 	
 	//채팅방(topic)에 발행되는 메시지를 처리할 Listner
 	@Autowired
 	private RedisMessageListenerContainer redisMessageListener;
 	
 	@Autowired
-	private RedisKccSubscriber redisSubscriber;
+	private RedisKccSubscriber redisKccSubscriber;
 	
 	private Map<String, ChannelTopic> subscribers = new HashMap<>();
 
@@ -55,11 +54,11 @@ public class RedisService {
 	public void removeSubscriber(String ext) {
 		log.info(">>># removeSubscriber ext :: {}", ext);
 		String key = asURL("/sub/redis", ext);
-		System.out.println("##" + findAllListener().toString());
+		log.info("## {}" ,findAllListener().toString());
 		if (subscribers.get(key) != null) {
-			ChannelTopic channel = subscribers.get(ext);
+			ChannelTopic channel = subscribers.get(key);
 			subscribers.remove(key);
-			redisMessageListener.removeMessageListener(redisSubscriber, channel);
+			redisMessageListener.removeMessageListener(redisKccSubscriber, channel);
 			System.out.println(">>> : "+ findAllListener().toString());
 		}
 	}
@@ -81,7 +80,7 @@ public class RedisService {
 		}
 		// 채널 생성
 		ChannelTopic channel = new ChannelTopic(key);
-		redisMessageListener.addMessageListener(redisSubscriber, channel);
+		redisMessageListener.addMessageListener(redisKccSubscriber, channel);
 		subscribers.put(key, channel);	//구독 list에 추가
 	}
 	

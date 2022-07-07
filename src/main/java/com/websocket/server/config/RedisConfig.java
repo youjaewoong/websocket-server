@@ -50,25 +50,35 @@ public class RedisConfig {
     /**
      * redis pub/sub 메시지를 처리하는 listener 설정
      */
-    @Bean
-    public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        return container;
-    }
+//    @Bean
+//    public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory) {
+//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+//        container.setConnectionFactory(connectionFactory);
+//        return container;
+//    }
     
+    
+	
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(){
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        return redisTemplate;
+    }
     
     /**
      * 어플리케이션에서 사용할 redisTemplate 설정
      */
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(connectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
-        return redisTemplate;
-    }
+//    @Bean
+//    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+//        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+//        redisTemplate.setConnectionFactory(connectionFactory);
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+//        return redisTemplate;
+//    }
     
     @Bean
     public CacheManager cacheManager() {
@@ -83,17 +93,24 @@ public class RedisConfig {
     }
     
     
-//    @Bean
-//    public StringRedisTemplate strRedisTemplate() {
-//        StringRedisTemplate redisTemplate = new StringRedisTemplate();
-//        redisTemplate.setConnectionFactory(redisConnectionFactory());
-//        return redisTemplate;
-//    }
-//    
-//    
-//    @Bean  
-//    public MessageListenerAdapter messageListener(RedisSubscriber redisSubscriber) {  
-//    	return new MessageListenerAdapter(redisSubscriber);  
-//    }
+    @Bean
+    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        return container;
+    }
+    
+    @Bean
+    public StringRedisTemplate strRedisTemplate() {
+        StringRedisTemplate redisTemplate = new StringRedisTemplate();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        return redisTemplate;
+    }
+    
+    
+    @Bean  
+    public MessageListenerAdapter messageListener(RedisSubscriber redisSubscriber) {  
+    	return new MessageListenerAdapter(redisSubscriber);  
+    }
 
 }

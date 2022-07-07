@@ -1,16 +1,17 @@
 package com.websocket.server.controller.redis.kcc;
 
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.websocket.server.model.WebSocketTest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping()
 public class WebSocketTestController {
 
-    private HashOperations<String, Object, Object> hashOperations;
-    private final SimpMessagingTemplate websocketSimpMessagingTemplate; //특정 Broker로 메세지를 전달
+    private final SimpMessagingTemplate template; //특정 Broker로 메세지를 전달
+//    private HashOperations<String, Object, Object> hashOperations;
+    @SuppressWarnings("unused")
+	private RedisTemplate<String, Object> redisTemplate;
+    private ValueOperations<String, Object> stringOperations;
 
-    @Autowired
-    public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
-        this.hashOperations = redisTemplate.opsForHash();
-    }
 
     /*
     *
@@ -37,31 +37,42 @@ public class WebSocketTestController {
     * /subscribe/message : 값 받을때
     *
     * */
+    @Autowired
+    public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
+    	this.redisTemplate = redisTemplate;
+    	this.stringOperations = redisTemplate.opsForValue();
+    }
+    
+    //단순히 레디스에만 값 저장하는 테스트 API
+    @PostMapping("/sendString")
+    public String sendTest(@RequestBody String input, @RequestParam String ext) throws UnsupportedEncodingException {
+        log.info("RedisTestController.sendTest");
+        log.info("input : " + input);
 
-    @MessageMapping(value = "/message")    // /publisher/message
-    public void message(WebSocketTest webSocketTestEntity){
-        this.sendRedis(webSocketTestEntity.getValue());
-        websocketSimpMessagingTemplate.convertAndSend("/subscribe/message",webSocketTestEntity.getValue());
+        log.info("ext : " + ext);
+        
+        String key = "testString";
+        
+        stringOperations.set(key, input);  //testSting 이라는 키값으로 redis에 값 넣음
+        
+        template.convertAndSend("/sub/redis/"+ext, input);
+        return input;
     }
 
-    private void sendRedis(String input){
-        log.info("SEND TO REDIS.." + input);
-        String inputs = "";
-        if(this.hashOperations.get("REDIS_TEST_ROOM","send_str")!=null){
-            inputs = (String) this.hashOperations.get("redis_test_room","send_str");
-        }
-        inputs += (","+input);
-        this.hashOperations.put("REDIS_TEST_ROOM","send_str",inputs);
-        log.info("current stack inputs : " + inputs);
-    }
 
-    private String getRedis(){
-        log.info("getRedis()");
-        Map<Object,Object> redisTestRoomComponent = this.hashOperations.entries("redis_test_room");
-        if(redisTestRoomComponent.get("send_str")==null){
-            return "";
-        }else{
-            return redisTestRoomComponent.get("send_str").toString();
+    @MessageMapping(value = "/redis/enter")    // /publisher/message
+    public void message(){
+    	log.info("SEND TO REDIS..");
+    	
+        String returnValue = "";
+        String key = "testString";
+        
+        if(stringOperations.get(key) != null){
+        	log.info("key value : " + stringOperations.get(key));
+        	returnValue = stringOperations.get(key).toString();
+        	template.convertAndSend("/sub/redis/1111", returnValue);
         }
+        
+        template.convertAndSend("/sub/redis/1111", returnValue);
     }
 }

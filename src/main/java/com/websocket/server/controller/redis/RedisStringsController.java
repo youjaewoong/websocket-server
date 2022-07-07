@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +44,7 @@ public class RedisStringsController {
 	
 	
 	@ApiOperation("String 타입 조회")
-    @PostMapping("get")
+    @PostMapping("gets")
     public ResponseEntity<?> get(@RequestBody List<String> keys) {
 		
 		List<String> values = valueOperations.multiGet(keys);
@@ -51,5 +52,15 @@ public class RedisStringsController {
 		
         return new ResponseEntity<>(values, HttpStatus.OK);
     }
+	
+	
+	@ApiOperation("String 타입 조회")
+    @GetMapping()
+    public ResponseEntity<?> string(String key) {
+		String value = valueOperations.get(key);
+        return new ResponseEntity<>(value, HttpStatus.OK);
+	}
+        		
+
     
 }

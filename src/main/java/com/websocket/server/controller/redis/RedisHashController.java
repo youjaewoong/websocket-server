@@ -70,11 +70,23 @@ public class RedisHashController {
     
 
     @GetMapping("/hash/{keyName}")
-    public String getHash(@PathVariable String keyName) {
+    public String getHash1(@PathVariable String keyName) {
         
     	Map<Object,Object> room = this.hashOperations.entries(keyName);
         if (room.get("room") != null) {
         	return room.get("room").toString();
+        }
+        return null;
+    }
+    
+    
+    @GetMapping("/hash")
+    public String getHash2(String key1, String key2) {
+    	Map<Object,Object> room = this.hashOperations.entries(key1);
+    	String dd = (String) room.get(key2);
+    	System.out.println(dd);
+        if (room.get(key2) != null) {
+        	return (String) room.get(key2);
         }
         return null;
     }

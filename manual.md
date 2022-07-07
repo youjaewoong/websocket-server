@@ -52,3 +52,33 @@ sets -> smembers <key>
 sorted sets -> ZRANGEBYSCORE <key> <min> <max>
 stream -> xread count <count> streams <key> <ID>.
 ```
+
+
+
+```
+categorizer:18090140711179
+{"agent_status":[{"categories":[{"name":"교직원","level":"L"},{"name":"서울","level":"M"},{"name":"취업 후/일반","level":"S"},{"name":"최하위1","level":"SS"}]},{"categories":[{"name":"생활비대출","level":"L"},{"name":"신청","level":"M"},{"name":"대출제도","level":"S"},{"name":"","level":"SS"}]}]}
+```
+
+```
+topics:18090140711179
+sentence
+
+[
+   {
+      "letter":"1금융위는 지난 2월..",
+      "rank":1,
+      "value":1.4553
+   },
+   {
+      "letter":"2금융위는 지난 2월..",
+      "rank":2,
+      "value":1.4553
+   },
+   {
+      "letter":"3금융위는 지난 3월..",
+      "rank":3,
+      "value":1.3553
+   }
+]
+```
