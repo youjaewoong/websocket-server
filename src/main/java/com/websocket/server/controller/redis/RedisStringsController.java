@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,8 +56,8 @@ public class RedisStringsController {
 	
 	
 	@ApiOperation("String 타입 조회")
-    @GetMapping()
-    public ResponseEntity<?> string(String key) {
+    @GetMapping(value = "{key}", produces = "application/text; charset=utf8")
+    public ResponseEntity<?> string(@PathVariable String key) {
 		String value = valueOperations.get(key);
         return new ResponseEntity<>(value, HttpStatus.OK);
 	}

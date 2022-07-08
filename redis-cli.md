@@ -35,6 +35,18 @@ lrange list 1 -1
 2) "3"
 lrange list 0 -1
 ```
+
+```
+hashlist format
+topics:{rec-key}:word
+topics:{rec-key}:sentence
+categorizer:{rec-key}
+
+HGET topics:18090140711179:word
+HGET topics 18090140711179 word
+
+hget topics:18090140711179 sentence
+```
 ---
 ###실습
 

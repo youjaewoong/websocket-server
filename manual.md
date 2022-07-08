@@ -58,6 +58,8 @@ stream -> xread count <count> streams <key> <ID>.
 ```
 categorizer:18090140711179
 {"agent_status":[{"categories":[{"name":"교직원","level":"L"},{"name":"서울","level":"M"},{"name":"취업 후/일반","level":"S"},{"name":"최하위1","level":"SS"}]},{"categories":[{"name":"생활비대출","level":"L"},{"name":"신청","level":"M"},{"name":"대출제도","level":"S"},{"name":"","level":"SS"}]}]}
+
+{"agent_status":[{"categories":[{"level":"L","name":"일반상환대출"},{"level":"M","name":"연체관리"},{"level":"S","name":"가상계좌요청"}]},{"categories":[{"level":"L","name":"재단관련"},{"level":"M","name":"기타"},{"level":"S","name":"기타"}]},{"categories":[{"level":"L","name":"홈페이지"},{"level":"M","name":"기타"},{"level":"S","name":"기타"}]},{"categories":[{"level":"L","name":"취업후 상환 학자금대출"},{"level":"M","name":"자발적상환"},{"level":"S","name":"가상계좌요청"}]},{"categories":[{"level":"L","name":"국가장학금유형I"},{"level":"M","name":"신청"},{"level":"S","name":"신청방법"}]}]}
 ```
 
 ```

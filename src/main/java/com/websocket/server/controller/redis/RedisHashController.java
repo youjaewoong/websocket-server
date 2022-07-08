@@ -80,11 +80,9 @@ public class RedisHashController {
     }
     
     
-    @GetMapping("/hash")
+    @GetMapping(value = "/hash", produces = "application/text; charset=utf8")
     public String getHash2(String key1, String key2) {
     	Map<Object,Object> room = this.hashOperations.entries(key1);
-    	String dd = (String) room.get(key2);
-    	System.out.println(dd);
         if (room.get(key2) != null) {
         	return (String) room.get(key2);
         }
