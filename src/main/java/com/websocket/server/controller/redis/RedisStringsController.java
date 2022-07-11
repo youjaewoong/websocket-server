@@ -33,8 +33,8 @@ public class RedisStringsController {
     }
 	
 	
-	@ApiOperation("String 타입 저장")
-    @PostMapping("set")
+	@ApiOperation("String 타입 저장-1")
+    @PostMapping("sets")
     public ResponseEntity<?> set(@RequestBody List<RedisCache> redisCache) {
     	
         redisCache.forEach(v -> {
@@ -42,6 +42,15 @@ public class RedisStringsController {
         });
         return new ResponseEntity<>(redisCache, HttpStatus.CREATED);
     }
+	
+	
+	@ApiOperation("String 타입 저장-2")
+	@GetMapping("set")
+  	public void ObjectToRedisString(String key, String obj) {
+  		log.info("key : {}", key );
+  		log.info("obj : {}", obj );
+  		valueOperations.set(key, obj);
+  	}
 	
 	
 	@ApiOperation("String 타입 조회")

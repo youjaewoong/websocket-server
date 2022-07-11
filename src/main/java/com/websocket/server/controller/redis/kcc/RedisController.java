@@ -7,13 +7,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/pubsub")
+@Slf4j
 public class RedisController {
 
     @Autowired
@@ -33,14 +36,26 @@ public class RedisController {
     
     
 	@PostMapping("/createSubscriber/{ext}")
-	public void createSubscriber(@PathVariable String ext, @RequestBody String jsonData) {
-		redisService.createSubscriber(ext, jsonData);
+	public void createSubscriber(@PathVariable String ext, @RequestParam(value="depth", required=false) String depth, @RequestBody String jsonData) {
+		log.info("depth {}",depth);
+		if (depth != null) {
+			String[] depthArr = depth.split(",");
+			for(String de : depthArr) {
+				redisService.createSubscriber(ext, de, jsonData);
+			}
+		}
 	}
 	
 	@PostMapping("/removeSubscriber/{ext}")
-	public void removeSubscriber(@PathVariable String ext) {
-		redisService.removeSubscriber(ext);
+	public void removeSubscriber(@PathVariable String ext, @RequestParam(value="depth", required=false) String depth) {
+//		redisService.removeSubscriber(ext, path);
+		log.info("depth {}",depth);
+		if(!depth.equals(null) && depth.indexOf(',') >0) {
+			String[] depthArr = depth.split(",");
+			for(String de : depthArr) {
+				redisService.removeSubscriber(ext, de);
+			}
+		}
 	}
-	
 	
 }
