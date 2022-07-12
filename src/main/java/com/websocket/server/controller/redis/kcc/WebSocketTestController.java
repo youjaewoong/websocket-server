@@ -54,7 +54,7 @@ public class WebSocketTestController {
 
 		stringOperations.set(key, input); // testSting 이라는 키값으로 redis에 값 넣음
 
-		template.convertAndSend("/sub/redis/" + ext + "/stt", input);
+		template.convertAndSend("/sub/redis/stt/" + ext, input);
 		return input;
 	}
 

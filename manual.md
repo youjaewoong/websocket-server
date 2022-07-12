@@ -83,4 +83,6 @@ sentence
       "value":1.3553
    }
 ]
+
+publish /sub/redis/stt/1111 '{"ext":2810015,"cmd":"E","recKey":"987654321","dir":"T",  "index":"0","stt":"6988|7000|안녕하세요. KB국민은행 상담사 홍길동입니다.|R",  "dateTime":"2021-04-05 14:19:22.111","sttOnly":"안녕하세요. KB국민은행 상담사 홍길동입니다.","startTime":"111","endTime":"7000","who":"C","info":"stt" }'
 ```

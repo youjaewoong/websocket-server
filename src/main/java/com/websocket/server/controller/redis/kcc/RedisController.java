@@ -1,5 +1,8 @@
 package com.websocket.server.controller.redis.kcc;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -38,11 +41,18 @@ public class RedisController {
 	@PostMapping("/createSubscriber/{ext}")
 	public void createSubscriber(@PathVariable String ext, @RequestParam(value="depth", required=false) String depth, @RequestBody String jsonData) {
 		log.info("depth {}",depth);
-		if (depth != null) {
+		int cntComma=0;
+		Matcher m = Pattern.compile(",").matcher(depth);
+		while (m.find()){
+			cntComma++;
+		}
+		if(cntComma>0){
 			String[] depthArr = depth.split(",");
 			for(String de : depthArr) {
 				redisService.createSubscriber(ext, de, jsonData);
 			}
+		}else{
+			redisService.createSubscriber(ext, depth, jsonData);
 		}
 	}
 	

@@ -41,7 +41,7 @@ public class RedisService {
 		log.info(">>># createSubscriber ext :: {}", ext);
 
 		// 채널 생성
-		String key = asURL("/sub/redis", ext, path);
+		String key = asURL("/sub/redis", path, ext);
 
 		ChannelTopic channel = new ChannelTopic(key);
 		// 리스너
