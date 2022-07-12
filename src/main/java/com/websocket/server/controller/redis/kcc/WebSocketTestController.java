@@ -3,8 +3,6 @@ package com.websocket.server.controller.redis.kcc;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -24,38 +22,15 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketTestController {
 
 	private final SimpMessagingTemplate template; // 특정 Broker로 메세지를 전달
-//   private HashOperations<String, Object, Object> hashOperations;
-	private RedisTemplate<String, Object> redisTemplate;
 	private ValueOperations<String, Object> stringOperations;
 
-	/*
-	 *
-	 * /chat/test 로 소켓 연결
-	 *
-	 * /publish/message : 값 보낼때 /subscribe/message : 값 받을때
-	 *
-	 */
-	@Autowired
-	public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
-		this.redisTemplate = redisTemplate;
-		this.stringOperations = redisTemplate.opsForValue();
-	}
 
 	// 단순히 레디스에만 값 저장하는 테스트 API
 	@PostMapping("/sendString")
-	public String sendTest(@RequestBody String input, @RequestParam String ext)
+	public void sendTest(@RequestBody String input, @RequestParam String key, @RequestParam String ext)
 			throws UnsupportedEncodingException {
-		log.info("RedisTestController.sendTest");
-		log.info("input : " + input);
-
-		log.info("ext : " + ext);
-
-		String key = "testString";
-
-		stringOperations.set(key, input); // testSting 이라는 키값으로 redis에 값 넣음
-
-		template.convertAndSend("/sub/redis/stt/" + ext, input);
-		return input;
+		String subUrl = "/sub/redis/" + key + "/"+ ext;
+		template.convertAndSend(subUrl, input);
 	}
 
 	@MessageMapping(value = "/redis/enter") // /publisher/message
