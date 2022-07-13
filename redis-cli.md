@@ -1,4 +1,14 @@
 
+### redis
+```
+string -> GET <key>
+hash -> HGETALL <key>
+lists -> lrange <key> <start> <end>
+sets -> smembers <key>
+sorted sets -> ZRANGEBYSCORE <key> <min> <max>
+stream -> xread count <count> streams <key> <ID>.
+```
+
 ###기본
 ```
 저장(key value)

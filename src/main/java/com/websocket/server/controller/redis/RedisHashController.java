@@ -2,6 +2,7 @@ package com.websocket.server.controller.redis;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -68,6 +73,24 @@ public class RedisHashController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     
+    
+  	@SuppressWarnings("unchecked")
+  	@PostMapping("/hash/push-all")
+	public ResponseEntity<?> pushAllHash(String key, String obj) throws JsonMappingException, JsonProcessingException {
+  		Map<String, Object> pramsMap = new HashMap<>();
+		pramsMap = new ObjectMapper().readValue(obj, Map.class);
+		this.hashOperations.putAll(key, pramsMap);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+  	}
+  	
+  	
+  	@PostMapping("/hash/push/{key}")
+	public ResponseEntity<?> pushHash(@PathVariable String key, String hashKey, String obj) {
+  		this.hashOperations.put(key, hashKey, obj);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+  	}
+    
+    
 
     @GetMapping("/hash/{keyName}")
     public String getHash1(@PathVariable String keyName) {
@@ -81,10 +104,10 @@ public class RedisHashController {
     
     
     @GetMapping(value = "/hash", produces = "application/text; charset=utf8")
-    public String getHash2(String key1, String key2) {
-    	Map<Object,Object> room = this.hashOperations.entries(key1);
-        if (room.get(key2) != null) {
-        	return (String) room.get(key2);
+    public String getHash2(String key, String hashKey) {
+    	Map<Object,Object> room = this.hashOperations.entries(key);
+        if (room.get(hashKey) != null) {
+        	return (String) room.get(hashKey);
         }
         return null;
     }
