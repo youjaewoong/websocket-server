@@ -75,8 +75,8 @@ public class RedisHashController {
     
     
   	@SuppressWarnings("unchecked")
-  	@PostMapping("/hash/push-all")
-	public ResponseEntity<?> pushAllHash(String key, String obj) throws JsonMappingException, JsonProcessingException {
+  	@PostMapping(value = "/hash/{key}/push-all")
+	public ResponseEntity<?> pushAllHash(@PathVariable String key, @RequestBody String obj) throws JsonMappingException, JsonProcessingException {
   		Map<String, Object> pramsMap = new HashMap<>();
 		pramsMap = new ObjectMapper().readValue(obj, Map.class);
 		this.hashOperations.putAll(key, pramsMap);
@@ -85,11 +85,17 @@ public class RedisHashController {
   	
   	
   	@PostMapping("/hash/push/{key}")
-	public ResponseEntity<?> pushHash(@PathVariable String key, String hashKey, String obj) {
+	public ResponseEntity<?> postPushHash(@PathVariable String key, String hashKey, String obj) {
   		this.hashOperations.put(key, hashKey, obj);
 		return new ResponseEntity<>(HttpStatus.CREATED);
   	}
-    
+  	
+  	
+  	@GetMapping("/hash/push/{key}")
+	public ResponseEntity<?> getPushHash(@PathVariable String key, String hashKey, String obj) {
+  		this.hashOperations.put(key, hashKey, obj);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+  	}
     
 
     @GetMapping("/hash/{keyName}")
