@@ -1,0 +1,1 @@
+{  "callId": "20220623155200_00001",  "apId": "상담키",  "empId": "agent001",  "custId": "client001",  "callStartTime": "2022-06-23 15:52:00",  "inputTel": "010-1234-5678",  "ext": 1000,  "ioGbn": "I" }
