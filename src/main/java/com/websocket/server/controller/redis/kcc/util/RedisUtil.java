@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RedisUtil {
 	
-	// TODO: 에러처리 추가 예정
 
 	@Autowired
 	private static RedisTemplate<String, Object> redisTemplate;
@@ -46,7 +45,7 @@ public class RedisUtil {
 		log.info("key  {}", key);
 		
 		String result = (String) stringOperations.get(key);
-//		log.info("getString : {} " , result.toString());
+		log.info("getString : {} " , result.toString());
 		return result;
 	}
 	
@@ -55,7 +54,7 @@ public class RedisUtil {
 	 */
 	public static List<?> getListAll(String key) {
 		List<?> result = listOperations.range(key, 0, -1);
-//		log.info("getListAll : {} " , result.toString());
+		log.info("getListAll : {} " , result.toString());
 		return result;
 	}
 	
@@ -64,7 +63,7 @@ public class RedisUtil {
 	 */
 	public static List<?> getList(String key, int scount, int ecount) {
 		List<?> result = listOperations.range(key, scount, ecount);
-//		log.info("getList : {} " , result.toString());
+		log.info("getList : {} " , result.toString());
 		return result;
 	}
 	
@@ -73,7 +72,7 @@ public class RedisUtil {
 	 */
 	public static Object getSetAll(String key) {
 		Object result = setOperations.members(key);
-//		log.info("getSetAll : {} " , result.toString());
+		log.info("getSetAll : {} " , result.toString());
 		return result;
 	}
 	
@@ -82,7 +81,7 @@ public class RedisUtil {
 	 */
 	public static Object getHash(String key, String key2) {
 		Object result = hashOperations.get(key, key2);
-//		log.info("getHash : {} " , result.toString());
+		log.info("getHash : {} " , result.toString());
 		return result;
 	}
 	
@@ -90,9 +89,42 @@ public class RedisUtil {
 	 * redis에 key로 조회된  Hash의 전체 조회
 	 */
 	public static Map<Object, Object> getHashAll(String key) {
+		log.info("key : {} " , key);
 		Map<Object, Object> result = hashOperations.entries(key);
-//		log.info("getHashAll : {} " , result.toString());
+		log.info("getHashAll : {} " , result.toString());
 		return result;
 	}
+	
+	/**
+	 * 
+	 */
+    public static String getKey(String[] keyPolicy){
+        StringBuilder keySb = new StringBuilder();
+        for (int i = 0; i < keyPolicy.length; i++) {
+            keySb.append(keyPolicy[i]).append(":");
+        }
+		CommonStringUtil.deleteLastCharStringBuilder(keySb);
+        return keySb.toString();
+    }
+
+	
+	/**
+     * @description publish URL
+     * @param keys 키 목록 (ex: "stt", "0100", "rec-key")
+     * @return URL (ex: "/sub/redis/{ext}/{info}" )
+     */
+    public static String asURL(String... keys) {
+        return String.join("/", keys);
+    }
+    
+    
+    /**
+     * @description redis key set
+     * @param keys 키 목록 (ex: "stt", "0100", "rec-key")
+     * @return 키 (ex: "stt:0100:rec-key" )
+     */
+    public static String asKey(String... keys) {
+        return String.join(":", keys);
+    }
     
 }

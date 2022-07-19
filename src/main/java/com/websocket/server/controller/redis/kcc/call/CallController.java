@@ -17,28 +17,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.websocket.server.controller.redis.kcc.error.ResponseService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Api(tags = {"실시간 데이터 수신 및 Publich하는  Controller"})
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping(value = "/call")
 public class CallController {
 
-
+	@Autowired
+	private ResponseService responseService; // 결과를 처리하는 Service
+	
 	@Autowired
 	private CallService callService;
+	
 
 	/**
-	 * <p>
 	 * 발행되는 메시지를 처리할 Listner
-	 * 유형 : 조회
-	 * IF요소 : 실시간 대화 연결
-	 * </p>
 	 * @param : stt
 	 * @return : 실시간 STT 정보
 	 */
+	@ApiResponse(code = 0000, message = "구독중인 전체 Listener 리턴")
+    @ApiOperation(value = "발행되는 메시지를 처리할 Listner")
 	@PostMapping("/subAdvisor")
 	public Set<String> subAdvisor() {
 		log.info(">>># subAdvisor ext");
@@ -47,74 +54,63 @@ public class CallController {
 	
 	
 	/**
-	 * <p>
-	 * 
-	 * 
-	 * 유형 : 조회
-	 * 실행시점 : 조회시
-	 * IF요소 : 상담정보 상세보기
-	 * </p>
+	 * 상담 통화 연결 정보 수신
 	 * @param : 콜ID
 	 * @return : 콜상세 정보
 	 */
+	@ApiResponse(code = 0000, message = "상담 통화 연결 정보 수신 확인 코드")
+    @ApiOperation(value = "상담 통화 연결 정보")
 	@PostMapping("/selectCallInfo")
-	public void selectCallInfo(@RequestBody Object message) {
+	public String selectCallInfo(@RequestBody Object message) {
 		log.info(">>># selectCallInfo : {}", message);
 		try {
 			callService.redisAddCallInfomation(message);
+			return responseService.getSuccessResult().toString();
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			log.error(e.toString());
+			return responseService.getFailResult().toString();
 		}
 	}
 	
-	/**
-	 * <p>
-	 * 통화가 연결된 고객정보를 확인한다.
-	 * 유형 : 조회
-	 * </p>
-	 * @param : 상담원ID
-	 * @return : 고객정보,가입상품정보,전화번호,통화시작시간
-	 */
-	@PostMapping("/selectClientInfo")
-	public void selectClientInfo(@RequestBody Object message) {
-		log.info(">>># selectClientInfo");
-		try {
-    		callService.redisAddClientInfomation(message);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-	}
+
 	
 	/**
-	 * <p>
 	 * stt 전송
-	 * 유형 : 조회
-	 * 실행시점 : 조회시
-	 * IF요소 : 상담대화 상세보기
-	 * </p>
-	 * @param : 콜ID
+	 * @param : STT 정보
 	 * @return : STT 정보
 	 */
+	@ApiResponse(code = 0000, message = "STT 정보 수신 확인 코드")
+    @ApiOperation(value = "STT")
 	@PostMapping("/selectStt")
-	public void selectStt(@RequestBody Object message) {
+	public String selectStt(@RequestBody Object message) {
 		log.info(">>># selectStt");
 		try {
-			
-//			Map<String, Object> sttMap = ObjectUtil.ObjectToMap(message);
-//			//인포채터로 stt 던지기
-//			String infochatterAnswer = infochatterIntentAnalysisService.getInfochatterResultAnswer(sttMap.get("stt").toString());
-//			System.out.println(infochatterAnswer);
-//			// 인포채터 의도분석 저장
-//			redisSaver.save(
-//					RedisKeyType.HASH,
-//					infochatterAnswer,
-//					new String[]{"intend","callIdTest"},
-//					new String[]{sttMap.get("dateTime").toString(),sttMap.get("dir").toString()}
-//			);
-
 			callService.redisAddStt(message);
+			return responseService.getSuccessResult().toString();
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			log.error(e.toString());
+			return responseService.getFailResult().toString();
+		}
+	}
+	
+
+
+	
+	/**
+	 * 고객의 최근 상담 이력 전송
+	 * @param :  최근 상담 이력
+	 * @return :  최근 상담 이력
+	 */
+	@ApiResponse(code = 0000, message = "최근상담이력 수신 확인 코드")
+    @ApiOperation(value = "최근상담이력")
+	@PostMapping("/selectCallHistory")
+	public String selectCallHistory(@RequestBody Object message) {
+		log.info(">>># selectCallHistory");
+		try {
+    		return responseService.getSuccessResult().toString();
+		} catch (Exception e) {
+			log.error(e.toString());
+			return responseService.getFailResult().toString();
 		}
 	}
 }
