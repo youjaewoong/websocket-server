@@ -127,7 +127,7 @@ public class GlobalVariables {
     	RedisConstant.REDIS_HOST = redisHost;
     }
     
-    @Value("${redis.port:6379}")
+    @Value("${redis.port:8089}")
     public void setRedisPort(int redisPort) {
     	RedisConstant.REDIS_PORT = redisPort;
     }
@@ -151,7 +151,7 @@ public class GlobalVariables {
     	SIMULATION.SIMULATION_HOST = simulationHost;
     }
     
-    @Value("${simulation.port:6379}")
+    @Value("${simulation.port:8089}")
     public void setSimulationPort(int simulationPort) {
     	SIMULATION.SIMULATION_PORT = simulationPort;
     }
