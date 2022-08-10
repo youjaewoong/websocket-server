@@ -38,38 +38,26 @@ public class RedisService {
 	private Map<String, ChannelTopic> subscribers = new HashMap<>();
 
 	public void createSubscriber(String ext, String path, String jsonData) {
-		log.info(">>># createSubscriber ext :: {}", ext);
 
 		// 채널 생성
-		String key = asURL("/sub/redis", path, ext);
-
+		String key = asURL("/sub/redis", path, ext).replace("//", "/");
 		ChannelTopic channel = new ChannelTopic(key);
 		// 리스너
 		MessageListener messageListener = new MessageListener() {
 			@Override
 			public void onMessage(Message message, byte[] pattern) {
-				System.out.println("수신된 메시지 :: " + message);
 				subscriber(channel, message);
 			}
 		};
-
-		// 구독한다는 정보를 레디스메시지리스너에 등록
 		if (subscribers.get(key) == null) {
 			redisMessageListener.addMessageListener(messageListener, channel);
 			subscribers.put(key, channel); // 구독 list에 추가
 		}
 
-//		addListener(key);
-//		//publish
-//		redisTemplate.convertAndSend(
-//				key,
-//				jsonData);//publish
 	}
 
 	public void subscriber(ChannelTopic channel, Message message) {
-		log.info(">>># testSubscriber");
-		// 채널 생성
-		System.out.println(">>" + channel.getTopic() + " :: " + message);
+		log.info(">> {} :: {}", channel.getTopic(), message.toString());
 		template.convertAndSend(channel.getTopic(), message.toString());
 	}
 

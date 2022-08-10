@@ -29,8 +29,11 @@ public class WebSocketTestController {
 	@PostMapping("/sendString")
 	public void sendTest(@RequestBody String input, @RequestParam String key, @RequestParam String ext)
 			throws UnsupportedEncodingException {
-		String subUrl = "/sub/redis/" + key + "/"+ ext;
-		template.convertAndSend(subUrl, input);
+		if (ext == null) {
+			template.convertAndSend("/sub/redis/" + key, input);
+		} else {
+			template.convertAndSend("/sub/redis/" + key + "/"+ ext, input);
+		}
 	}
 
 	@MessageMapping(value = "/redis/enter") // /publisher/message
