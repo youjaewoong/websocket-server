@@ -27,7 +27,7 @@ public class WebSocketTestController {
 
 	// 단순히 레디스에만 값 저장하는 테스트 API
 	@PostMapping("/sendString")
-	public void sendTest(@RequestBody String input, @RequestParam String key, @RequestParam String ext)
+	public void sendTest(@RequestBody String input, @RequestParam String key, @RequestParam(required = false) String ext)
 			throws UnsupportedEncodingException {
 		if (ext == null) {
 			template.convertAndSend("/sub/redis/" + key, input);
