@@ -6,12 +6,17 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.websocket.server.controller.redis.kcc.model.NoticeMessage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +71,15 @@ public class RedisController {
 				redisService.removeSubscriber(ext, de);
 			}
 		}
+	}
+	
+	
+	@MessageMapping(value = "/redis/notice")
+	public void noticeMessage(@RequestBody NoticeMessage noticeMessage) throws JsonProcessingException {
+		redisTemplate.convertAndSend(
+				noticeMessage.getTopic(),
+				new ObjectMapper().
+				writeValueAsString(noticeMessage.getMessage()));
 	}
 	
 }
