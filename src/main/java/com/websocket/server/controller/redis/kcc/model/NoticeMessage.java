@@ -21,6 +21,8 @@ public class NoticeMessage implements Serializable {
 	@Setter
 	private static class Message {
 		
+		private String id;
+		
 		private String publisherId;
 		
 		private Category category;
