@@ -36,9 +36,9 @@ public class NoticeMessage implements Serializable {
 		private String message;
 	}
 	
-	//이벤트 발생 구분  ADD, DELETE, UPDATE
+	//이벤트 발생 구분  ADD, DELETE, UPDATE, RENOTICE
 	private enum eventType {
-		ADD,DELETE,UPDATE;
+		ADD,DELETE,UPDATE,RENOTICE;
 	}
 	
 	//발행자 구분

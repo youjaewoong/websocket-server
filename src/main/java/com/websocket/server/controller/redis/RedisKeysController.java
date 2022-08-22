@@ -65,7 +65,7 @@ public class RedisKeysController {
 	
 	@ApiOperation("key가 존재하는지 확인")
 	@GetMapping("has/{keyName}")
-	public ResponseEntity<?> hasKey(@PathVariable String keyName) {
+	public ResponseEntity<Boolean> hasKey(@PathVariable String keyName) {
 		return new ResponseEntity<>(redisTemplate.hasKey(keyName), HttpStatus.OK);
 	}
 	

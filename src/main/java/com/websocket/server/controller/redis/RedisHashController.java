@@ -100,13 +100,13 @@ public class RedisHashController {
 
     @GetMapping("/hash/{keyName}")
     public String getHash1(@PathVariable String keyName) {
-        
     	Map<Object,Object> room = this.hashOperations.entries(keyName);
         if (room.get("room") != null) {
         	return room.get("room").toString();
         }
         return null;
     }
+    
     
     
     @GetMapping(value = "/hash", produces = "application/text; charset=utf8")
