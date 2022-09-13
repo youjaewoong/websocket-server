@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.websocket.server.controller.redis.kcc.error.ResponseService;
+import com.websocket.server.controller.redis.kcc.error.SingleResult;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -93,6 +94,31 @@ public class CallController {
 		}
 	}
 	
+	
+	/**
+	 * 통화가 연결된 고객의 가입상품정보 전송
+	 * @param : 가입상품정보
+	 * @return : 가입상품정보
+	 */
+	@ApiResponse(code = 0000, message = "가입상품정보 수신 확인 코드")
+    @ApiOperation(value = "가입상품정보")
+	@PostMapping("/selectJoinProduct")
+	public SingleResult<String> selectJoinProduct(@RequestBody Object message) {
+		log.info(">>># selectJoinProduct");
+		
+		SingleResult<String> returnString = null;
+		try {
+    		returnString = responseService.getSingleResult(message.toString());
+    				//responseService.getSuccessResult().toString();
+    		log.info(">>># redisAddJoinProduct");
+    		log.info(returnString.toString());
+		} catch (Exception e) {
+			log.error(e.toString());
+			returnString = responseService.getFailSingleResult();
+					//responseService.getFailResult().toString();
+		}
+		return returnString;
+	}
 
 
 	
