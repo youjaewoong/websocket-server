@@ -74,7 +74,8 @@ public class RedisController {
 	}
 	
 	
-	@MessageMapping(value = "/redis/notice")
+	@MessageMapping("/redis/notice")
+	@PostMapping("/redis/notice")
 	public void noticeMessage(@RequestBody NoticeMessage noticeMessage) throws JsonProcessingException {
 		redisTemplate.convertAndSend(
 				noticeMessage.getTopic(),

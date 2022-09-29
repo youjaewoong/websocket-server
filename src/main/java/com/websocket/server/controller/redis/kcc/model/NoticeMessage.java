@@ -43,7 +43,7 @@ public class NoticeMessage implements Serializable {
 	
 	//발행자 구분
 	private enum AgentType {
-		AGENT,ADMIN;
+		AGENT,ADMIN,SYSTEM;
 	}
 	
 	//카테고리 구분 E: 긴급 N: 일반, W:워닝
