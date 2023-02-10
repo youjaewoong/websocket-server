@@ -1,8 +1,9 @@
-### port
-http://localhost:8089
-
 ### swagger
 http://localhost:8089/swagger-ui/index.html
+### argument setup
+```
+-Dapp.home=D:\log
+-Dspring.profiles.active=local
 
 ### 채팅방구조
 
